@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIY定制咖啡 | 创造属于您的专属咖啡</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f1ea;
+            color: #4a2c2a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .page {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        /* 过渡动画 */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #4a2c2a;
+            z-index: 9999;
+            transform: translateX(100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f5f1ea;
+            font-size: 2rem;
+            overflow: hidden;
+        }
+        
+        .coffee-bean {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            background-color: #d4a574;
+            border-radius: 50%;
+            opacity: 0;
+            animation: beanDrop 1s ease infinite;
+        }
+        
+        @keyframes beanDrop {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 欢迎页面样式 */
+        .welcome-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 100vh;
+            background: linear-gradient(rgba(74, 44, 42, 0.85), rgba(74, 44, 42, 0.9)), url('https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2067&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #f5f1ea;
+        }
+        
+        .welcome-content {
+            max-width: 800px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #f5f1ea;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .welcome-tagline {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        .welcome-features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            gap: 20px;
+        }
+        
+        .feature {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            background-color: rgba(212, 165, 116, 0.2);
+            border-radius: 15px;
+            margin: 10px;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #d4a574;
+        }
+        
+        .start-btn {
+            background-color: #d4a574;
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            box-shadow: 0 10px 20px rgba(212, 165, 116, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .start-btn:hover {
+            background-color: #b8915e;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(212, 165, 116, 0.4);
+        }
+        
+        /* 定制页面样式（原有样式修改） */
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(rgba(74, 44, 42, 0.9), rgba(74, 44, 42, 0.8)), url('https://images.unsplash.com/photo-1498804103079-a6351b050096?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2067&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #f5f1ea;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(74, 44, 42, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .coffee-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #d4a574;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .customization-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d4a574;
+            color: #4a2c2a;
+        }
+        
+        .option-group {
+            margin-bottom: 25px;
+        }
+        
+        .option-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #4a2c2a;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-title i {
+            margin-right: 10px;
+            color: #d4a574;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 10px 15px;
+            background-color: #f9f5f0;
+            border: 2px solid #e6d5c3;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .option:hover {
+            background-color: #f0e6db;
+        }
+        
+        .option.selected {
+            background-color: #d4a574;
+            color: white;
+            border-color: #b8915e;
+            font-weight: 600;
+        }
+        
+        .slider-container {
+            padding: 10px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e6d5c3;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #d4a574;
+            cursor: pointer;
+            border: 2px solid #b8915e;
+        }
+        
+        .slider-value {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #4a2c2a;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: #f9f5f0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e6d5c3;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .checkbox-item input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .coffee-preview {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(to bottom, #6f4e37, #4a2c2a);
+            border-radius: 50%;
+            position: relative;
+            margin: 20px 0 30px;
+            box-shadow: 0 10px 20px rgba(74, 44, 42, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .coffee-cup {
+            width: 150px;
+            height: 180px;
+            background: linear-gradient(to right, #8b5a2b, #a67c52);
+            border-radius: 0 0 40px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .coffee-content {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            transition: height 0.5s ease;
+        }
+        
+        .coffee-foam {
+            height: 20px;
+            background-color: #e6d5c3;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .coffee-liquid {
+            height: calc(100% - 20px);
+        }
+        
+        .preview-details {
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .preview-details h3 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e6d5c3;
+        }
+        
+        .price-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .price-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0e6db;
+        }
+        
+        .total-price {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4a2c2a;
+            padding-top: 20px;
+            border-top: 3px double #d4a574;
+        }
+        
+        .order-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto 0;
+            padding: 18px 30px;
+            background-color: #d4a574;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+        
+        .order-btn:hover {
+            background-color: #b8915e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.4);
+        }
+        
+        .order-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 取餐码页面样式 */
+        .pickup-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f1ea 0%, #e6d5c3 100%);
+            text-align: center;
+        }
+        
+        .pickup-content {
+            background-color: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(74, 44, 42, 0.2);
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        .pickup-icon {
+            font-size: 5rem;
+            color: #d4a574;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .pickup-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4a2c2a;
+        }
+        
+        .order-summary {
+            background-color: #f9f5f0;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .pickup-code {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #d4a574;
+            letter-spacing: 10px;
+            margin: 40px 0;
+            background-color: #f9f5f0;
+            padding: 30px;
+            border-radius: 15px;
+            border: 5px dashed #d4a574;
+            animation: codeAppear 1s ease;
+        }
+        
+        @keyframes codeAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .pickup-instructions {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #6f4e37;
+        }
+        
+        .pickup-time {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4a2c2a;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0e6db;
+            border-radius: 10px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .new-order-btn {
+            background-color: #4a2c2a;
+            color: white;
+        }
+        
+        .new-order-btn:hover {
+            background-color: #3a231f;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(74, 44, 42, 0.3);
+        }
+        
+        .home-btn {
+            background-color: #d4a574;
+            color: white;
+        }
+        
+        .home-btn:hover {
+            background-color: #b8915e;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 165, 116, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            color: #8b7d6b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e6d5c3;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .coffee-preview {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .coffee-cup {
+                width: 130px;
+                height: 160px;
+            }
+            
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+            
+            .pickup-code {
+                font-size: 3rem;
+                letter-spacing: 5px;
+                padding: 20px;
+            }
+            
+            .pickup-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面过渡层 -->
+    <div class="transition-overlay" id="transition-overlay">
+        <div class="transition-text">正在为您准备中...</div>
+    </div>
+    
+    <!-- 欢迎页面 -->
+    <div class="page active" id="welcome-page">
+        <section class="welcome-page">
+            <div class="welcome-content">
+                <div class="coffee-icon">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <h1 class="welcome-title">欢迎来到DIY定制咖啡</h1>
+                <p class="welcome-tagline">
+                    从咖啡豆到最后一滴，完全按照您的喜好定制。<br>
+                    创造独一无二的咖啡体验，开启您的专属咖啡之旅。
+                </p>
+                
+                <div class="welcome-features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>精选咖啡豆</h3>
+                        <p>来自世界各地的优质咖啡豆供您选择</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3>多种烘焙度</h3>
+                        <p>从浅烘到深烘，满足不同口味偏好</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>丰富配料</h3>
+                        <p>多种配料自由搭配，创造独特风味</p>
+                    </div>
+                </div>
+                
+                <button class="start-btn" id="start-btn">
+                    <i class="fas fa-coffee"></i> 开始定制我的咖啡
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 定制页面 -->
+    <div class="page" id="customization-page">
+        <div class="container">
+            <header>
+                <div class="coffee-icon">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <h1>DIY定制咖啡</h1>
+                <p class="tagline">从咖啡豆到最后一滴，完全按照您的喜好定制。选择您的咖啡豆、烘焙度、配料和份量，创造独一无二的咖啡体验。</p>
+            </header>
+            
+            <div class="main-content">
+                <section class="customization-section">
+                    <h2 class="section-title">定制您的咖啡</h2>
+                    
+                    <div class="option-group">
+                        <div class="option-title">
+                            <i class="fas fa-seedling"></i>
+                            <span>咖啡豆类型</span>
+                        </div>
+                        <div class="options" id="coffee-bean-options">
+                            <div class="option selected" data-value="arabica" data-price="25">阿拉比卡 <span class="price">¥25</span></div>
+                            <div class="option" data-value="robusta" data-price="22">罗布斯塔 <span class="price">¥22</span></div>
+                            <div class="option" data-value="blend" data-price="28">混合豆 <span class="price">¥28</span></div>
+                            <div class="option" data-value="ethiopian" data-price="30">埃塞俄比亚 <span class="price">¥30</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <div class="option-title">
+                            <i class="fas fa-fire"></i>
+                            <span>烘焙程度</span>
+                        </div>
+                        <div class="options" id="roast-options">
+                            <div class="option selected" data-value="light" data-price="0">浅烘焙</div>
+                            <div class="option" data-value="medium" data-price="2">中烘焙 <span class="price">+¥2</span></div>
+                            <div class="option" data-value="dark" data-price="4">深烘焙 <span class="price">+¥4</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <div class="option-title">
+                            <i class="fas fa-wine-bottle"></i>
+                            <span>咖啡份量</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="5" value="3" class="slider" id="coffee-amount">
+                            <div class="slider-value" id="coffee-amount-value">中杯 (350ml)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <div class="option-title">
+                            <i class="fas fa-tint"></i>
+                            <span>浓度选择</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" min="1" max="3" value="2" class="slider" id="strength">
+                            <div class="slider-value" id="strength-value">中等浓度</div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <div class="option-title">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>添加配料 (每项+¥5)</span>
+                        </div>
+                        <div class="checkbox-group" id="toppings">
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="milk"> 鲜奶
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="cream"> 奶油
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="vanilla"> 香草糖浆
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="caramel"> 焦糖
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="chocolate"> 巧克力酱
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" value="cinnamon"> 肉桂粉
+                            </label>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="preview-section">
+                    <h2 class="section-title">您的咖啡预览</h2>
+                    <div class="coffee-preview">
+                        <div class="coffee-cup">
+                            <div class="coffee-content" id="coffee-liquid">
+                                <div class="coffee-foam"></div>
+                                <div class="coffee-liquid" id="liquid-color"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-details">
+                        <h3>咖啡详情</h3>
+                        <div class="detail-item">
+                            <span>咖啡类型:</span>
+                            <span id="preview-bean">阿拉比卡</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>烘焙程度:</span>
+                            <span id="preview-roast">浅烘焙</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>份量:</span>
+                            <span id="preview-amount">中杯 (350ml)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>浓度:</span>
+                            <span id="preview-strength">中等浓度</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>配料:</span>
+                            <span id="preview-toppings">无</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <section class="price-section">
+                <h2 class="section-title">价格明细</h2>
+                <div class="price-breakdown">
+                    <div>
+                        <div class="price-item">
+                            <span>咖啡豆:</span>
+                            <span id="price-bean">¥25</span>
+                        </div>
+                        <div class="price-item">
+                            <span>烘焙程度:</span>
+                            <span id="price-roast">¥0</span>
+                        </div>
+                        <div class="price-item">
+                            <span>份量:</span>
+                            <span id="price-amount">¥0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="price-item">
+                            <span>浓度:</span>
+                            <span id="price-strength">¥0</span>
+                        </div>
+                        <div class="price-item">
+                            <span>配料:</span>
+                            <span id="price-toppings">¥0</span>
+                        </div>
+                        <div class="price-item">
+                            <span>制作费:</span>
+                            <span>¥5</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-price">
+                    <span>总计:</span>
+                    <span id="total-price">¥30</span>
+                </div>
+                <button class="order-btn" id="order-btn">
+                    <i class="fas fa-mug-hot"></i> 下单定制咖啡
+                </button>
+            </section>
+            
+            <footer>
+                <p>© 2023 DIY定制咖啡 | 本页面仅用于演示目的 | 咖啡因让我们更接近星辰</p>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- 取餐码页面 -->
+    <div class="page" id="pickup-page">
+        <section class="pickup-page">
+            <div class="pickup-content">
+                <div class="pickup-icon">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <h1 class="pickup-title">订单已确认！</h1>
+                <p class="pickup-instructions">您的专属咖啡正在制作中，请凭以下取餐码到店取餐</p>
+                
+                <div class="order-summary">
+                    <h3>订单摘要</h3>
+                    <div class="detail-item">
+                        <span>咖啡类型:</span>
+                        <span id="order-bean">阿拉比卡</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>烘焙程度:</span>
+                        <span id="order-roast">浅烘焙</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>配料:</span>
+                        <span id="order-toppings">无</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>总金额:</span>
+                        <span id="order-total">¥30</span>
+                    </div>
+                </div>
+                
+                <div class="pickup-code" id="pickup-code">A7B9C3</div>
+                
+                <div class="pickup-time">
+                    <i class="fas fa-clock"></i> 预计取餐时间：10-15分钟
+                </div>
+                
+                <p class="pickup-instructions">
+                    请妥善保管您的取餐码<br>
+                    您也可以在我们的"订单追踪"页面查看制作进度
+                </p>
+                
+                <div class="action-buttons">
+                    <button class="action-btn new-order-btn" id="new-order-btn">
+                        <i class="fas fa-plus-circle"></i> 再来一杯
+                    </button>
+                    <button class="action-btn home-btn" id="home-btn">
+                        <i class="fas fa-home"></i> 返回首页
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 页面管理
+        const pages = {
+            welcome: document.getElementById('welcome-page'),
+            customization: document.getElementById('customization-page'),
+            pickup: document.getElementById('pickup-page')
+        };
+        
+        const transitionOverlay = document.getElementById('transition-overlay');
+        let currentPage = 'welcome';
+        
+        // 初始化咖啡预览和价格
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCoffeePreview();
+            updatePrice();
+            
+            // 开始按钮事件
+            document.getElementById('start-btn').addEventListener('click', function() {
+                transitionToPage('customization');
+            });
+            
+            // 咖啡豆选项点击事件
+            document.querySelectorAll('#coffee-bean-options .option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('#coffee-bean-options .option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    updateCoffeePreview();
+                    updatePrice();
+                });
+            });
+            
+            // 烘焙程度选项点击事件
+            document.querySelectorAll('#roast-options .option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('#roast-options .option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    updateCoffeePreview();
+                    updatePrice();
+                });
+            });
+            
+            // 咖啡份量滑块事件
+            const coffeeAmountSlider = document.getElementById('coffee-amount');
+            coffeeAmountSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                let amountText = '';
+                
+                switch(value) {
+                    case 1: amountText = '小杯 (250ml)'; break;
+                    case 2: amountText = '中小杯 (300ml)'; break;
+                    case 3: amountText = '中杯 (350ml)'; break;
+                    case 4: amountText = '大杯 (400ml)'; break;
+                    case 5: amountText = '超大杯 (450ml)'; break;
+                }
+                
+                document.getElementById('coffee-amount-value').textContent = amountText;
+                
+                // 更新咖啡液体高度
+                const liquidHeight = 20 + (value * 16);
+                document.getElementById('coffee-liquid').style.height = `${liquidHeight}%`;
+                
+                updateCoffeePreview();
+                updatePrice();
+            });
+            
+            // 浓度滑块事件
+            const strengthSlider = document.getElementById('strength');
+            strengthSlider.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                let strengthText = '';
+                let strengthColor = '';
+                
+                switch(value) {
+                    case 1: 
+                        strengthText = '轻度浓度';
+                        strengthColor = '#a67c52';
+                        break;
+                    case 2: 
+                        strengthText = '中等浓度';
+                        strengthColor = '#8b5a2b';
+                        break;
+                    case 3: 
+                        strengthText = '重度浓度';
+                        strengthColor = '#4a2c2a';
+                        break;
+                }
+                
+                document.getElementById('strength-value').textContent = strengthText;
+                document.getElementById('liquid-color').style.backgroundColor = strengthColor;
+                
+                updateCoffeePreview();
+                updatePrice();
+            });
+            
+            // 配料复选框事件
+            document.querySelectorAll('#toppings input').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateCoffeePreview();
+                    updatePrice();
+                });
+            });
+            
+            // 下单按钮事件
+            document.getElementById('order-btn').addEventListener('click', function() {
+                // 保存订单信息到取餐页面
+                saveOrderInfo();
+                // 生成随机取餐码
+                generatePickupCode();
+                // 跳转到取餐页面
+                transitionToPage('pickup');
+            });
+            
+            // 取餐页面按钮事件
+            document.getElementById('new-order-btn').addEventListener('click', function() {
+                transitionToPage('customization');
+            });
+            
+            document.getElementById('home-btn').addEventListener('click', function() {
+                transitionToPage('welcome');
+            });
+        });
+        
+        // 页面切换函数
+        function transitionToPage(pageName) {
+            // 显示过渡动画
+            transitionOverlay.style.transform = 'translateX(0)';
+            
+            // 创建咖啡豆动画
+            createCoffeeBeans();
+            
+            // 设置过渡文本
+            const transitionText = transitionOverlay.querySelector('.transition-text');
+            if (pageName === 'customization') {
+                transitionText.textContent = '正在进入定制页面...';
+            } else if (pageName === 'pickup') {
+                transitionText.textContent = '正在生成取餐码...';
+            } else {
+                transitionText.textContent = '正在加载...';
+            }
+            
+            // 延迟切换页面
+            setTimeout(() => {
+                // 隐藏当前页面
+                pages[currentPage].classList.remove('active');
+                
+                // 显示新页面
+                pages[pageName].classList.add('active');
+                
+                // 更新当前页面
+                currentPage = pageName;
+                
+                // 隐藏过渡动画
+                setTimeout(() => {
+                    transitionOverlay.style.transform = 'translateX(100%)';
+                }, 500);
+            }, 1500);
+        }
+        
+        // 创建咖啡豆动画
+        function createCoffeeBeans() {
+            const overlay = document.getElementById('transition-overlay');
+            
+            // 清除之前的咖啡豆
+            const existingBeans = overlay.querySelectorAll('.coffee-bean');
+            existingBeans.forEach(bean => bean.remove());
+            
+            // 创建新的咖啡豆
+            for (let i = 0; i < 15; i++) {
+                const bean = document.createElement('div');
+                bean.className = 'coffee-bean';
+                
+                // 随机位置和动画延迟
+                const left = Math.random() * 100;
+                const delay = Math.random() * 2;
+                const duration = 1 + Math.random() * 1.5;
+                
+                bean.style.left = `${left}%`;
+                bean.style.animationDelay = `${delay}s`;
+                bean.style.animationDuration = `${duration}s`;
+                
+                overlay.appendChild(bean);
+            }
+        }
+        
+        function updateCoffeePreview() {
+            // 更新咖啡豆类型
+            const selectedBean = document.querySelector('#coffee-bean-options .option.selected');
+            const beanName = selectedBean.textContent.split('¥')[0].trim();
+            document.getElementById('preview-bean').textContent = beanName;
+            
+            // 更新烘焙程度
+            const selectedRoast = document.querySelector('#roast-options .option.selected');
+            const roastName = selectedRoast.textContent.split('+')[0].trim();
+            document.getElementById('preview-roast').textContent = roastName;
+            
+            // 更新份量
+            document.getElementById('preview-amount').textContent = document.getElementById('coffee-amount-value').textContent;
+            
+            // 更新浓度
+            document.getElementById('preview-strength').textContent = document.getElementById('strength-value').textContent;
+            
+            // 更新配料
+            const selectedToppings = [];
+            document.querySelectorAll('#toppings input:checked').forEach(checkbox => {
+                const label = checkbox.parentElement.textContent.trim();
+                selectedToppings.push(label);
+            });
+            
+            const toppingsText = selectedToppings.length > 0 ? selectedToppings.join(', ') : '无';
+            document.getElementById('preview-toppings').textContent = toppingsText;
+        }
+        
+        function updatePrice() {
+            // 咖啡豆价格
+            const selectedBean = document.querySelector('#coffee-bean-options .option.selected');
+            const beanPrice = parseInt(selectedBean.getAttribute('data-price'));
+            document.getElementById('price-bean').textContent = `¥${beanPrice}`;
+            
+            // 烘焙程度价格
+            const selectedRoast = document.querySelector('#roast-options .option.selected');
+            const roastPrice = parseInt(selectedRoast.getAttribute('data-price'));
+            document.getElementById('price-roast').textContent = roastPrice > 0 ? `+¥${roastPrice}` : '¥0';
+            
+            // 份量价格
+            const amountValue = parseInt(document.getElementById('coffee-amount').value);
+            const amountPrice = (amountValue - 3) * 3; // 中杯为基础价格
+            document.getElementById('price-amount').textContent = amountPrice !== 0 ? (amountPrice > 0 ? `+¥${amountPrice}` : `-¥${Math.abs(amountPrice)}`) : '¥0';
+            
+            // 浓度价格（免费）
+            document.getElementById('price-strength').textContent = '¥0';
+            
+            // 配料价格
+            const selectedToppingsCount = document.querySelectorAll('#toppings input:checked').length;
+            const toppingsPrice = selectedToppingsCount * 5;
+            document.getElementById('price-toppings').textContent = toppingsPrice > 0 ? `+¥${toppingsPrice}` : '¥0';
+            
+            // 计算总价
+            const basePrice = 5; // 制作费
+            const totalPrice = beanPrice + roastPrice + amountPrice + toppingsPrice + basePrice;
+            document.getElementById('total-price').textContent = `¥${totalPrice}`;
+        }
+        
+        // 保存订单信息到取餐页面
+        function saveOrderInfo() {
+            document.getElementById('order-bean').textContent = document.getElementById('preview-bean').textContent;
+            document.getElementById('order-roast').textContent = document.getElementById('preview-roast').textContent;
+            document.getElementById('order-toppings').textContent = document.getElementById('preview-toppings').textContent;
+            document.getElementById('order-total').textContent = document.getElementById('total-price').textContent;
+        }
+        
+        // 生成随机取餐码
+        function generatePickupCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+            let code = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * chars.length);
+                code += chars[randomIndex];
+            }
+            
+            document.getElementById('pickup-code').textContent = code;
+        }
+    </script>
+</body>
+</html>
